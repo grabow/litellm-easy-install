@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:18.3
+    container_name: litellm-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - litellm_pg:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  litellm:
+    image: docker.litellm.ai/berriai/litellm:v1.81.3-stable
+    container_name: litellm
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      CAMPUS_GPT_API_KEY: ${CAMPUS_GPT_API_KEY}
+    command: --config /app/config.yaml --host 0.0.0.0 --port 4000
+
+volumes:
+  litellm_pg:
