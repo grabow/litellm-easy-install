@@ -61,6 +61,7 @@ Important variables:
 - `POSTGRES_DB`: database name
 - `DATABASE_URL`: connection string used by LiteLLM
 - `LITELLM_MASTER_KEY`: master key for accessing LiteLLM
+- `CAMPUS_GPT_API_BASE`: base URL of the upstream Campus GPT API
 - `CAMPUS_GPT_API_KEY`: API key for the upstream Campus GPT endpoint
 
 Example:
@@ -71,12 +72,14 @@ POSTGRES_PASSWORD=change-me
 POSTGRES_DB=litellm
 DATABASE_URL=postgresql://litellm:change-me@db:5432/litellm
 LITELLM_MASTER_KEY=change-me
+CAMPUS_GPT_API_BASE=https://llm-proxy.imla.hs-offenburg.de/v1
 CAMPUS_GPT_API_KEY=change-me
 ```
 
 Notes:
 
 - If you change `POSTGRES_USER`, `POSTGRES_PASSWORD`, or `POSTGRES_DB`, you must also update `DATABASE_URL`.
+- `CAMPUS_GPT_API_BASE` should include the full LiteLLM-compatible API base, for example `https://example.org/v1`.
 - Choose strong values for `POSTGRES_PASSWORD` and `LITELLM_MASTER_KEY`.
 
 ## Step 4: Start LiteLLM
@@ -192,4 +195,4 @@ If LiteLLM does not respond on port `4000`:
 
 1. Check `docker compose ps`.
 2. Check `docker compose logs -f litellm`.
-3. Confirm that `.env` contains a valid `CAMPUS_GPT_API_KEY`.
+3. Confirm that `.env` contains valid values for `CAMPUS_GPT_API_BASE` and `CAMPUS_GPT_API_KEY`.

@@ -2,7 +2,7 @@ model_list:
   - model_name: campus-gpt
     litellm_params:
       model: openai/gpt-5.2
-      api_base: https://llm-proxy.imla.hs-offenburg.de/v1
+      api_base: os.environ/CAMPUS_GPT_API_BASE
       api_key: os.environ/CAMPUS_GPT_API_KEY
 
 litellm_settings:

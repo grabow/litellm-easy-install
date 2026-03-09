@@ -27,6 +27,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      CAMPUS_GPT_API_BASE: ${CAMPUS_GPT_API_BASE}
       CAMPUS_GPT_API_KEY: ${CAMPUS_GPT_API_KEY}
     command: --config /app/config.yaml --host 0.0.0.0 --port 4000
 
