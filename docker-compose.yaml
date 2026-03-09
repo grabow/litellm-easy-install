@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:18.3
-    container_name: litellm-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -16,7 +15,6 @@ services:
 
   litellm:
     image: docker.litellm.ai/berriai/litellm:v1.81.3-stable
-    container_name: litellm
     depends_on:
       db:
         condition: service_healthy

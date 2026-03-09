@@ -37,7 +37,7 @@ Open a terminal in this repository.
 Example:
 
 ```bash
-cd hsog-litellm-local
+cd hsog-litellm-easy
 ```
 
 ## Step 2: Create your environment file
@@ -109,8 +109,13 @@ docker compose ps
 
 You should see:
 
-- `litellm-db` as `healthy`
-- `litellm` as `up`
+- the `db` service as `healthy`
+- the `litellm` service as `up`
+
+Docker Compose creates container names automatically. Typical names look like:
+
+- `hsog-litellm-easy-db-1`
+- `hsog-litellm-easy-litellm-1`
 
 You can also test the LiteLLM health endpoint:
 
@@ -190,6 +195,18 @@ If `docker compose up -d` fails:
 2. Run `docker compose ps` to inspect service state.
 3. Run `docker compose logs -f` to inspect errors.
 4. If needed, reset the setup with `docker compose down -v` and start again.
+
+If Docker reports a container name conflict such as `litellm-db is already in use`, remove the old manually created containers once:
+
+```bash
+docker rm -f litellm-db litellm
+```
+
+Then start the stack again:
+
+```bash
+docker compose up -d
+```
 
 If LiteLLM does not respond on port `4000`:
 
