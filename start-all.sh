@@ -70,24 +70,36 @@ echo "Starte Key-Portal..."
 PORTAL_PID=$!
 sleep 3
 
-# ── Cloudflare-Tunnel starten ────────────────────────
+# ── Cloudflare-Tunnel starten (benannte Tunnel mit festen URLs) ──
+LITELLM_TOKEN_FILE="$HOME/.cloudflared/hsog-litellm.token"
+PORTAL_TOKEN_FILE="$HOME/.cloudflared/hsog-portal.token"
+
+if [ ! -f "$LITELLM_TOKEN_FILE" ] || [ ! -f "$PORTAL_TOKEN_FILE" ]; then
+  echo "FEHLER: Tunnel-Token-Dateien nicht gefunden unter ~/.cloudflared/" >&2
+  exit 1
+fi
+
+LITELLM_TOKEN=$(cat "$LITELLM_TOKEN_FILE")
+PORTAL_TOKEN=$(cat "$PORTAL_TOKEN_FILE")
+
 echo "Starte Cloudflare-Tunnel für LiteLLM..."
-cloudflared tunnel --url http://localhost:4000 --no-autoupdate 2>&1 \
-  | grep --line-buffered -o 'https://[a-z0-9-]*\.trycloudflare\.com' \
-  | head -1 \
-  | xargs -I{} echo "  LiteLLM-URL:  {}" &
+cloudflared tunnel --no-autoupdate run \
+  --token "$LITELLM_TOKEN" \
+  --url http://localhost:4000 &
 CF_LITELLM_PID=$!
 
 echo "Starte Cloudflare-Tunnel für Key-Portal..."
-cloudflared tunnel --url http://localhost:8080 --no-autoupdate 2>&1 \
-  | grep --line-buffered -o 'https://[a-z0-9-]*\.trycloudflare\.com' \
-  | head -1 \
-  | xargs -I{} echo "  Portal-URL:   {}" &
+cloudflared tunnel --no-autoupdate run \
+  --token "$PORTAL_TOKEN" \
+  --url http://localhost:8080 &
 CF_PORTAL_PID=$!
 
+# Feste URLs ausgeben
 echo ""
-echo "Alle Dienste gestartet. URLs erscheinen in Kürze oben."
-echo "Ctrl-C zum Beenden."
+echo "  LiteLLM-URL:  https://a4465488-cbfb-4083-a0cf-b918043aa49a.cfargotunnel.com"
+echo "  Portal-URL:   https://8dc995b2-f8bb-4e3a-94da-1ca2abbd6004.cfargotunnel.com"
+echo ""
+echo "Alle Dienste gestartet. Ctrl-C zum Beenden."
 echo ""
 
 wait
