@@ -61,8 +61,8 @@ Important variables:
 - `POSTGRES_DB`: database name
 - `DATABASE_URL`: connection string used by LiteLLM
 - `LITELLM_MASTER_KEY`: master key for accessing LiteLLM
-- `CAMPUS_GPT_API_BASE`: base URL of the upstream Campus GPT API
-- `CAMPUS_GPT_API_KEY`: API key for the upstream Campus GPT endpoint
+- `HSOG_URL`: base URL of the upstream Campus GPT API
+- `HSOG_KEY`: API key for the upstream Campus GPT endpoint
 
 Example:
 
@@ -72,14 +72,14 @@ POSTGRES_PASSWORD=change-me
 POSTGRES_DB=litellm
 DATABASE_URL=postgresql://litellm:change-me@db:5432/litellm
 LITELLM_MASTER_KEY=change-me
-CAMPUS_GPT_API_BASE=dummy-url
-CAMPUS_GPT_API_KEY=change-me
+HSOG_URL=dummy-url
+HSOG_KEY=change-me
 ```
 
 Notes:
 
 - If you change `POSTGRES_USER`, `POSTGRES_PASSWORD`, or `POSTGRES_DB`, you must also update `DATABASE_URL`.
-- `CAMPUS_GPT_API_BASE` should include the full LiteLLM-compatible API base, for example `https://example.org/v1`.
+- `HSOG_URL` should include the full LiteLLM-compatible API base, for example `https://example.org/v1`.
 - Choose strong values for `POSTGRES_PASSWORD` and `LITELLM_MASTER_KEY`.
 
 ## Step 4: Start LiteLLM
@@ -136,6 +136,46 @@ After startup, LiteLLM is available at:
 ```text
 http://localhost:4000
 ```
+
+## All-in-one start with Cloudflare Tunnel
+
+`start-all.sh` starts LiteLLM, the Key Portal, and two Cloudflare Tunnels in one step.
+Students can then reach LiteLLM and the Key Portal via public `trycloudflare.com` URLs
+without any port forwarding or fixed IP address.
+
+### Additional requirements
+
+- `cloudflared` — install with `brew install cloudflared`
+- `uv` — install with `brew install uv` or `pip install uv`
+- The Key Portal repository must be checked out next to this one at `../hsog-litellm-key-portal`
+- The Key Portal must have its own `.env` file configured
+
+### Usage
+
+```bash
+./start-all.sh
+```
+
+After a few seconds the public URLs are printed:
+
+```
+LiteLLM-URL:  https://xyz-abc.trycloudflare.com
+Portal-URL:   https://def-ghi.trycloudflare.com
+```
+
+Give these URLs to the students. The URLs change every time you restart `start-all.sh`.
+
+Press `Ctrl-C` to stop all services cleanly.
+
+### What start-all.sh does
+
+1. Starts LiteLLM + its PostgreSQL database via Docker Compose
+2. Starts the Key Portal database via Docker Compose
+3. Waits until both services are ready
+4. Starts the Key Portal (`uv run portal.py`)
+5. Opens two Cloudflare Tunnels and prints the public URLs
+
+---
 
 ## Useful commands
 
@@ -212,4 +252,4 @@ If LiteLLM does not respond on port `4000`:
 
 1. Check `docker compose ps`.
 2. Check `docker compose logs -f litellm`.
-3. Confirm that `.env` contains valid values for `CAMPUS_GPT_API_BASE` and `CAMPUS_GPT_API_KEY`.
+3. Confirm that `.env` contains valid values for `HSOG_URL` and `HSOG_KEY`.
