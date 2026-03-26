@@ -137,15 +137,10 @@ After startup, LiteLLM is available at:
 http://localhost:4000
 ```
 
-## All-in-one start with Cloudflare Tunnel
-
-`start-all.sh` starts LiteLLM, the Key Portal, and two Cloudflare Tunnels in one step.
-Students can then reach LiteLLM and the Key Portal via public `trycloudflare.com` URLs
-without any port forwarding or fixed IP address.
+## All-in-one local start
 
 ### Additional requirements
 
-- `cloudflared` — install with `brew install cloudflared`
 - `uv` — install with `brew install uv` or `pip install uv`
 - The Key Portal repository must be checked out next to this one at `../hsog-litellm-key-portal`
 - The Key Portal must have its own `.env` file configured
@@ -156,14 +151,14 @@ without any port forwarding or fixed IP address.
 ./start-all.sh
 ```
 
-After a few seconds the public URLs are printed:
+After a few seconds the local URLs are printed:
 
 ```
-LiteLLM-URL:  https://xyz-abc.trycloudflare.com
-Portal-URL:   https://def-ghi.trycloudflare.com
+════════════════════════════════════════════════════
+  LiteLLM-URL:  http://localhost:4000
+  Portal-URL:   http://localhost:8080
+════════════════════════════════════════════════════
 ```
-
-Give these URLs to the students. The URLs change every time you restart `start-all.sh`.
 
 Press `Ctrl-C` to stop all services cleanly.
 
@@ -173,7 +168,7 @@ Press `Ctrl-C` to stop all services cleanly.
 2. Starts the Key Portal database via Docker Compose
 3. Waits until both services are ready
 4. Starts the Key Portal (`uv run portal.py`)
-5. Opens two Cloudflare Tunnels and prints the public URLs
+5. Prints the local URLs for LiteLLM and the Key Portal
 
 ---
 
