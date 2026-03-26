@@ -14,7 +14,7 @@ services:
       retries: 20
 
   litellm:
-    image: docker.litellm.ai/berriai/litellm:v1.81.3-stable
+    image: docker.litellm.ai/berriai/litellm:v1.81.14-stable.gpt-5.4-patch7
     depends_on:
       db:
         condition: service_healthy
@@ -25,8 +25,14 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
-      CAMPUS_GPT_API_BASE: ${CAMPUS_GPT_API_BASE}
-      CAMPUS_GPT_API_KEY: ${CAMPUS_GPT_API_KEY}
+      HSOG_URL: ${HSOG_URL}
+      HSOG_KEY: ${HSOG_KEY}
+      ACADEMIC_URL: ${ACADEMIC_URL}
+      ACADEMIC_KEY: ${ACADEMIC_KEY}
+      NVIDIA_URL: ${NVIDIA_URL}
+      NVIDIA_KEY: ${NVIDIA_KEY}
+      OPENROUTER_URL: ${OPENROUTER_URL}
+      OPENROUTER_KEY: ${OPENROUTER_KEY}
     command: --config /app/config.yaml --host 0.0.0.0 --port 4000
 
 volumes:
